@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One-Prompt Startup Launcher — one sentence in, a launchable startup out</title>
+<meta name="description" content="Type one sentence describing a startup idea. Get a name, logo, landing page, and a working waitlist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style id="lp-style"></style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#/"><span class="brand-mark">1p</span> One-Prompt Launcher</a>
+  <nav class="topnav" aria-label="Main">
+    <button data-nav="launch" class="active">Launch</button>
+    <button data-nav="library">Library</button>
+    <button data-nav="admin">Waitlists</button>
+    <button data-nav="settings">Settings</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- LAUNCH VIEW -->
+  <section id="view-launch" class="view show" aria-label="Launcher">
+    <p class="kicker">One sentence in, a launchable startup out</p>
+    <h1>Type the idea.<br>Get the startup.</h1>
+    <p class="lede">One sentence describing a startup idea becomes a name, a logo, a landing page, and a working waitlist. No key needed to try it — the offline builder works on its own, and a Gemini key makes the copy live.</p>
+
+    <div class="launcher">
+      <aside class="rail" aria-label="Agent steps">
+        <h3>Launch rail</h3>
+        <div id="rail"></div>
+        <p class="rail-note" id="rail-note">Idle. Type an idea and press Launch it — or pick an example below.</p>
+      </aside>
+
+      <div>
+        <div class="prompt-box">
+          <label for="prompt" class="small" style="display:block;margin-bottom:8px;font-weight:700;color:var(--ink)">Your one sentence</label>
+          <textarea id="prompt" maxlength="400" placeholder="a meal-planning app for hostel students"></textarea>
+          <div class="prompt-row">
+            <span class="char-count" id="char-count">0 / 280</span>
+            <button class="btn" id="launch-btn">Launch it</button>
+          </div>
+          <p class="error" id="prompt-error" role="alert"></p>
+          <p class="status-line" id="status-line"></p>
+        </div>
+        <div class="examples" aria-label="Example ideas">
+          <span>Try one:</span>
+          <button class="chip" data-example="a meal-planning app for hostel students">a meal-planning app for hostel students</button>
+          <button class="chip" data-example="a pantry tracker that tells you what to cook with what you already have">a pantry tracker that tells you what to cook</button>
+          <button class="chip" data-example="a place where college students find a senior to clear one doubt in 15 minutes">a senior who clears one doubt in 15 minutes</button>
+        </div>
+
+        <div class="result" id="result">
+          <div class="result-head">
+            <div class="logo-box">
+              <span id="result-logo"></span>
+              <div>
+                <div><strong id="result-name" style="font-size:20px"></strong><span class="source-badge" id="result-source"></span></div>
+                <div class="muted" id="result-tagline"></div>
+                <div class="logo-src" id="result-logo-src"></div>
+              </div>
+            </div>
+            <div class="result-actions">
+              <button class="btn-ghost btn-small" id="btn-copy-link">Copy link</button>
+              <button class="btn-ghost btn-small" id="btn-open-page">Open live page</button>
+              <button class="btn-ghost btn-small" id="btn-download-html">Download page (.html)</button>
+              <button class="btn-ghost btn-small" id="btn-download-logo">Download logo (.svg)</button>
+            </div>
+          </div>
+          <div class="edit-row">
+            <input class="name" id="edit-name" aria-label="Startup name" maxlength="40">
+            <input class="tag" id="edit-tagline" aria-label="Tagline" maxlength="140">
+            <button class="btn btn-small" id="btn-apply-edit">Apply name + tagline</button>
+          </div>
+          <div class="templates" role="group" aria-label="Template">
+            <span class="lbl">Template:</span>
+            <button class="seg" data-template="poster">Poster</button>
+            <button class="seg" data-template="split">Split</button>
+            <button class="seg" data-template="stack">Stack</button>
+            <span class="lbl" style="margin-left:12px">Palette:</span>
+            <span class="swatches" id="swatches"></span>
+          </div>
+          <div class="preview-frame" id="preview"></div>
+          <div class="published-bar">
+            <strong>Published:</strong> <code id="published-url"></code>
+            <span class="small" id="published-count"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLISHED PAGE VIEW -->
+  <section id="view-page" class="view" aria-label="Published page">
+    <p><button class="btn-ghost btn-small" id="btn-back">← Back to launcher</button></p>
+    <div class="preview-frame" id="page-view" style="margin-top:16px"></div>
+    <p class="small" style="margin-top:12px"><a href="#/" id="page-admin-link">See this waitlist in Admin</a> · <span id="page-source"></span></p>
+  </section>
+
+  <!-- LIBRARY VIEW -->
+  <section id="view-library" class="view" aria-label="Launch library">
+    <p class="kicker">Library</p>
+    <h2>Every launch you have made</h2>
+    <p class="lede">Cached launches ship with the app. New launches are saved here automatically. Counts are real signups only — every list starts at 0.</p>
+    <div class="grid-cards" id="library-cards"></div>
+    <div class="empty" id="library-empty" hidden>No launches yet. Go to Launch and type one sentence.</div>
+  </section>
+
+  <!-- ADMIN VIEW -->
+  <section id="view-admin" class="view" aria-label="Waitlist admin">
+    <p class="kicker">Waitlists</p>
+    <h2>Who signed up</h2>
+    <p class="lede">Real signups only, with the time they joined. Export a CSV when you want the list out.</p>
+    <div class="field" style="max-width:520px">
+      <label for="admin-select">Launch</label>
+      <select id="admin-select" style="width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px"></select>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn-ghost btn-small" id="btn-export-csv">Export CSV</button>
+        <button class="btn-ghost btn-small" id="btn-clear-waitlist">Clear this waitlist</button>
+      </div>
+    </div>
+    <p style="margin-top:16px"><strong id="admin-count"></strong></p>
+    <div id="admin-table-wrap"></div>
+  </section>
+
+  <!-- SETTINGS VIEW -->
+  <section id="view-settings" class="view" aria-label="Settings">
+    <p class="kicker">Settings</p>
+    <h2>Keys — yours, on your machine only</h2>
+    <p class="lede">Nothing here is required. Without a Gemini key the launcher builds everything offline and says so. Keys are stored in this browser's localStorage and are only sent to the service you paste them for.</p>
+    <div class="settings-grid">
+      <div class="field">
+        <label for="gemini-key">Gemini API key</label>
+        <input id="gemini-key" type="password" placeholder="AIza…" autocomplete="off">
+        <p>Free key from Google AI Studio. Live generation uses model <code>gemini-3.8-flash</code> (current for new projects, per Google's docs). If that model returns 404, it tries <code>gemini-3.5-flash-lite</code> once.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-small" id="btn-save-key">Save key</button>
+          <button class="btn-ghost btn-small" id="btn-test-key">Test key</button>
+          <button class="btn-ghost btn-small" id="btn-clear-key">Remove key</button>
+        </div>
+        <p class="small" id="key-status" style="margin-top:12px"></p>
+      </div>
+      <div class="field">
+        <label>Supabase (optional)</label>
+        <input id="sb-url" type="text" placeholder="https://your-project.supabase.co" autocomplete="off" style="margin-bottom:8px">
+        <input id="sb-key" type="password" placeholder="anon key" autocomplete="off">
+        <p>Optional. If set, new signups are also written to your Supabase <code>waitlist</code> table (columns: email, slug, created_at). If it is not set, signups stay in this browser — that is the default and it works fine.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-small" id="btn-save-sb">Save Supabase settings</button>
+          <button class="btn-ghost btn-small" id="btn-clear-sb">Remove</button>
+        </div>
+        <p class="small" id="sb-status" style="margin-top:12px"></p>
+      </div>
+    </div>
+    <div class="field" style="margin-top:16px">
+      <label>Local server (optional, for a shared waitlist)</label>
+      <p>Run <code>python3 server.py</code> in this folder. It serves the app on port 8131 and stores signups in <code>data/waitlist.json</code>, so everyone on the same machine sees the same count. The app detects the server automatically; without it, it uses localStorage.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="page">
+  <span>One-Prompt Startup Launcher — built for a hackathon demo. No fake numbers: every waitlist count is a real signup.</span>
+  <span>MIT · Sivasai Boggu, 2026</span>
+</footer>
+
+<script src="generator.js"></script>
+<script src="launches.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

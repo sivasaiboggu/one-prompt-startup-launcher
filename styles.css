@@ -1,0 +1,116 @@
+/* One-Prompt Startup Launcher — lime #84CC16 on charcoal, Space Grotesk.
+   Signature idea: the launch rail — a left vertical timeline of agent steps. */
+:root{
+  --bg:#16181A; --panel:#1E2124; --panel2:#232629; --line:#33373B;
+  --ink:#F2F3F0; --muted:#9BA1A6; --lime:#84CC16; --lime-ink:#1A2E05;
+  --lime-dim:#3F6212; --red:#F87171; --amber:#FBBF24;
+  --radius:10px; --font:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;}
+a{color:var(--lime)}
+button{font-family:var(--font);cursor:pointer}
+input,textarea,select{font-family:var(--font);font-size:16px;color:var(--ink)}
+:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.topbar{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:10}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px;letter-spacing:-.01em;text-decoration:none;color:var(--ink)}
+.brand-mark{width:28px;height:28px;background:var(--lime);color:var(--lime-ink);display:grid;place-items:center;font-weight:700;font-size:15px;border-radius:6px}
+.topnav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.topnav button{background:none;border:1px solid transparent;color:var(--muted);padding:8px 12px;border-radius:8px;font-size:15px}
+.topnav button:hover{color:var(--ink);border-color:var(--line)}
+.topnav button.active{color:var(--lime);border-color:var(--lime-dim)}
+.wrap{max-width:1180px;margin:0 auto;padding:32px 24px 80px}
+h1{font-size:clamp(34px,5vw,54px);line-height:1.05;letter-spacing:-.03em;margin:0 0 12px;max-width:20ch}
+h2{font-size:24px;letter-spacing:-.02em;margin:0 0 8px}
+.lede{color:var(--muted);font-size:18px;max-width:62ch;margin:0 0 28px}
+.muted{color:var(--muted)} .small{font-size:13px;color:var(--muted)}
+.kicker{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--lime);font-weight:700;margin-bottom:12px}
+
+/* ---------- launcher layout: rail + main ---------- */
+.launcher{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
+.rail{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);padding:18px;position:sticky;top:76px}
+.rail h3{margin:0 0 14px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.rail-step{display:flex;gap:10px;padding:9px 0;color:var(--muted);font-size:15px}
+.rail-step .dot{flex:0 0 22px;height:22px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:12px;background:var(--bg)}
+.rail-step.run{color:var(--ink)} .rail-step.run .dot{border-color:var(--lime);color:var(--lime)}
+.rail-step.done{color:var(--ink)} .rail-step.done .dot{background:var(--lime);border-color:var(--lime);color:var(--lime-ink)}
+.rail-step small{display:block;color:var(--muted);font-size:12px}
+.rail-note{border-top:1px solid var(--line);margin-top:12px;padding-top:12px;font-size:13px;color:var(--muted)}
+
+.prompt-box{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+.prompt-box textarea{width:100%;min-height:96px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:14px;resize:vertical;line-height:1.5}
+.prompt-box textarea::placeholder{color:#6B7280}
+.prompt-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.char-count{font-size:13px;color:var(--muted)} .char-count.over{color:var(--red)}
+.btn{background:var(--lime);color:var(--lime-ink);border:0;border-radius:8px;padding:12px 20px;font-weight:700;font-size:16px}
+.btn:hover{background:#9BE615}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:10px 14px;font-size:15px}
+.btn-ghost:hover{border-color:var(--lime)}
+.btn-small{padding:8px 12px;font-size:14px}
+.examples{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.examples span{font-size:13px;color:var(--muted)}
+.chip{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:13px;text-align:left}
+.chip:hover{border-color:var(--lime)}
+.error{color:var(--red);font-size:14px;margin-top:10px;min-height:1.2em}
+.status-line{margin-top:14px;font-size:15px;color:var(--muted);min-height:1.4em}
+.status-line b{color:var(--lime)}
+.source-badge{display:inline-block;font-size:12px;font-weight:700;border:1px solid var(--lime-dim);color:var(--lime);border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+
+/* ---------- result ---------- */
+.result{margin-top:28px;display:none}
+.result.show{display:block}
+.result-head{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;justify-content:space-between}
+.logo-box{display:flex;gap:14px;align-items:center}
+.logo-box svg{width:64px;height:64px;border-radius:12px;display:block}
+.logo-box .logo-src{font-size:12px;color:var(--muted)}
+.result-actions{display:flex;gap:8px;flex-wrap:wrap}
+.edit-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.edit-row input{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.edit-row input.name{flex:1;min-width:200px;font-weight:700;font-size:18px}
+.edit-row input.tag{flex:2;min-width:260px}
+.templates{display:flex;gap:8px;margin:18px 0;flex-wrap:wrap;align-items:center}
+.templates .lbl{font-size:13px;color:var(--muted);margin-right:4px}
+.seg{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:8px 14px;font-size:14px}
+.seg.active{background:var(--lime);color:var(--lime-ink);border-color:var(--lime);font-weight:700}
+.swatches{display:flex;gap:8px;align-items:center}
+.swatch{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer}
+.swatch.active{border-color:var(--ink)}
+.preview-frame{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff}
+.preview-frame .lp{max-width:none}
+.published-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px;background:var(--panel);border:1px solid var(--lime-dim);border-radius:8px;padding:12px 14px}
+.published-bar code{color:var(--lime);word-break:break-all}
+
+/* ---------- library / admin ---------- */
+.grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.card h3{margin:0 0 4px;font-size:19px}
+.card p{margin:0 0 12px;color:var(--muted);font-size:14px}
+.card .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.count-pill{font-size:13px;color:var(--lime);font-weight:700}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+.empty{border:1px dashed var(--line);border-radius:var(--radius);padding:28px;text-align:center;color:var(--muted);margin-top:20px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.field{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.field label{display:block;font-weight:700;margin-bottom:6px}
+.field input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:11px 12px}
+.field p{color:var(--muted);font-size:14px;margin:8px 0 12px}
+.view{display:none} .view.show{display:block}
+footer.page{border-top:1px solid var(--line);padding:20px 24px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* generated-page styles live in generator.js (LP_CSS) — shared with standalone export */
+@media (max-width:820px){
+  .launcher{grid-template-columns:1fr}
+  .rail{position:static}
+  .settings-grid{grid-template-columns:1fr}
+  .wrap{padding:24px 16px 64px}
+  .topbar{padding:12px 16px;flex-wrap:wrap;gap:8px}
+  .brand{white-space:nowrap;font-size:16px}
+  .topnav{margin-left:0}
+  .topnav button{padding:7px 10px;font-size:14px}
+}
