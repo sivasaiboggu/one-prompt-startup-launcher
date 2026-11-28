@@ -147,3 +147,20 @@ test('palettes are valid hex and distinct', () => {
   }
   assert.equal(new Set(OPL.PALETTES.map((p) => p.accent)).size, 3);
 });
+
+
+test('offlineName: words ending in "ss" keep the stem (no "clas" names)', () => {
+  const name = OPL.offlineName('a class booking app for students');
+  assert.ok(name.toLowerCase().startsWith('class'), name);
+});
+
+test('offlineName: plurals and gerunds still shorten cleanly', () => {
+  assert.ok(OPL.offlineName('a running tracker for mornings').toLowerCase().includes('run'), 'running -> run stem');
+  assert.ok(OPL.offlineName('a plants watering app').toLowerCase().includes('plant'), 'plants -> plant stem');
+});
+
+test('makeLogoSVG: a hostile name cannot break out of the aria-label', () => {
+  const { svg } = OPL.makeLogoSVG('Test"><script>alert(1)</script>', OPL.PALETTES[0]);
+  assert.ok(!svg.includes('"><script>'), svg);
+  assert.ok(!svg.includes('<script>alert'), svg);
+});

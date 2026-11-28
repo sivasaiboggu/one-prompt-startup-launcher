@@ -46,7 +46,13 @@
     var kws = keywords(prompt);
     for (var i = 0; i < kws.length; i++) if (NAME_MAP[kws[i]]) return NAME_MAP[kws[i]];
     if (!kws.length) return 'Newloop';
-    var base = kws[0].replace(/(ing|ers|es|s)$/, '');
+    // Strip a trailing plural/gerund only when it leaves a real stem:
+    // "class" and "glass" end in "ss" and must keep it ("clas" is not a word).
+    var base = kws[0];
+    if (/ing$/.test(base) && base.length > 5) base = base.replace(/ing$/, '');
+    else if (/ers$/.test(base) && base.length > 5) base = base.replace(/ers$/, '');
+    else if (/es$/.test(base) && base.length > 4) base = base.replace(/es$/, '');
+    else if (/s$/.test(base) && !/ss$/.test(base) && base.length > 3) base = base.replace(/s$/, '');
     return cap(base) + SUFFIXES[hashString(prompt) % SUFFIXES.length];
   }
 
@@ -108,7 +114,7 @@
     else if (shape === 2) mark = '<path d="M48 14 L82 82 L14 82 Z" fill="' + a + '"/><circle cx="48" cy="62" r="10" fill="' + bg + '"/>';
     else mark = '<rect x="18" y="18" width="60" height="60" rx="30" fill="' + a + '"/><rect x="18" y="44" width="60" height="8" fill="' + bg + '"/>';
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="' +
-      name.replace(/"/g, '') + ' logo"><rect width="96" height="96" rx="20" fill="' + bg + '"/>' + mark + '</svg>';
+      escapeHtml(name).replace(/"/g, '') + ' logo"><rect width="96" height="96" rx="20" fill="' + bg + '"/>' + mark + '</svg>';
     return { svg: svg, shape: ['ring', 'square', 'triangle', 'bar'][shape], source: 'svg-generator' };
   }
 
